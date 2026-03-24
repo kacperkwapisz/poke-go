@@ -1,0 +1,12 @@
+# Build output
+poke
+poke.exe
+dist/
+
+# macOS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+*.swp
