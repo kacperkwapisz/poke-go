@@ -151,8 +151,7 @@ func (c *Conn) ReadMessage() ([]byte, error) {
 	}
 }
 
-// WriteMessage sends data as a single unmasked (server-masked per RFC for
-// clients) text frame.
+// WriteMessage sends data as a single masked (client-to-server) text frame.
 func (c *Conn) WriteMessage(data []byte) error {
 	return c.writeFrame(opText, data)
 }
@@ -163,7 +162,7 @@ func (c *Conn) Close() {
 	c.conn.Close()
 }
 
-// readFrame reads one WebSocket frame.
+// readFrame reads one WebSocket frame from the server.
 func (c *Conn) readFrame() (fin bool, opcode byte, payload []byte, err error) {
 	b0, err := c.r.ReadByte()
 	if err != nil {
@@ -201,6 +200,7 @@ func (c *Conn) readFrame() (fin bool, opcode byte, payload []byte, err error) {
 		}
 	}
 
+	// Use a local variable, not the named return, to avoid confusion.
 	data := make([]byte, payloadLen)
 	if _, err := io.ReadFull(c.r, data); err != nil {
 		return false, 0, nil, err
